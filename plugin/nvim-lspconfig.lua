@@ -154,6 +154,9 @@ vim.diagnostic.config {
 local capabilities = require('blink.cmp').get_lsp_capabilities()
 
 local servers = {
+  rubocop = {
+    cmd = { 'bundle', 'exec', 'rubocop', '--lsp' },
+  },
   lua_ls = {
     -- cmd = { ... },
     -- filetypes = { ... },

@@ -1,4 +1,4 @@
-require 'globals'
-require 'options'
-require 'keymaps'
-require 'autocmds'
+require("globals")
+require("options")
+require("keymaps")
+require("autocmds")
