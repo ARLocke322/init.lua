@@ -29,6 +29,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	end,
 })
 
-vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#908caa" }) -- lines above cursor
-vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#908caa" }) -- lines below cursor
--- vim.api.nvim_set_hl(0, 'LineNr', { fg = '#e0def4' }) -- current line number
+-- vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#908caa" }) -- lines above cursor
+-- vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#908caa" }) -- lines below cursor
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#e0def4" }) -- current line number
