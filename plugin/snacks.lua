@@ -5,6 +5,38 @@ vim.pack.add({
 
 local Snacks = require("snacks")
 
+local picker_toggles = {
+	["<S-h>"] = "toggle_hidden",
+	["<S-i>"] = "toggle_ignored",
+	["<S-f>"] = "toggle_follow",
+}
+
+local exclude = {
+	"**/.git/*",
+	"**/node_modules/*",
+	"**/.yarn/cache/*",
+	"**/.yarn/install*",
+	"**/.yarn/releases/*",
+	"**/.pnpm-store/*",
+	"**/.idea/*",
+	"**/.DS_Store",
+	"build/*",
+	"coverage/*",
+	"dist/*",
+	"hodor-types/*",
+	"**/target/*",
+	"**/public/*",
+	"**/digest*.txt",
+	"**/.node-gyp/**",
+	"**/tmp/cache/**",
+}
+
+local grep_exclude = vim.list_extend(vim.deepcopy(exclude), {
+	"**/.venv/*",
+	"**/yarn.lock",
+	"certificates/*",
+})
+
 Snacks.setup({
 	dashboard = {
 		enabled = true,
@@ -21,157 +53,84 @@ Snacks.setup({
 			files = {
 				hidden = true,
 				ignored = true,
+				exclude = exclude,
 				win = {
 					input = {
-						keys = {
-							["<S-h>"] = "toggle_hidden",
-							["<S-i>"] = "toggle_ignored",
-							["<S-f>"] = "toggle_follow",
+						keys = vim.tbl_extend("force", picker_toggles, {
 							["<C-y>"] = { "yazi_copy_relative_path", mode = { "n", "i" } },
-						},
+						}),
 					},
-				},
-				exclude = {
-					"**/.git/*",
-					"**/node_modules/*",
-					"**/.yarn/cache/*",
-					"**/.yarn/install*",
-					"**/.yarn/releases/*",
-					"**/.pnpm-store/*",
-					"**/.idea/*",
-					"**/.DS_Store",
-					"build/*",
-					"coverage/*",
-					"dist/*",
-					"hodor-types/*",
-					"**/target/*",
-					"**/public/*",
-					"**/digest*.txt",
-					"**/.node-gyp/**",
-					"**/tmp/cache/**",
 				},
 			},
 			grep = {
 				hidden = true,
 				ignored = true,
-				win = {
-					input = {
-						keys = {
-							["<S-h>"] = "toggle_hidden",
-							["<S-i>"] = "toggle_ignored",
-							["<S-f>"] = "toggle_follow",
-						},
-					},
-				},
-				exclude = {
-					"**/.git/*",
-					"**/node_modules/*",
-					"**/.yarn/cache/*",
-					"**/.yarn/install*",
-					"**/.yarn/releases/*",
-					"**/.pnpm-store/*",
-					"**/.venv/*",
-					"**/.idea/*",
-					"**/.DS_Store",
-					"**/yarn.lock",
-					"build*/*",
-					"coverage/*",
-					"dist/*",
-					"hodor-types/*",
-					"certificates/*",
-					"**/target/*",
-					"**/public/*",
-					"**/digest*.txt",
-					"**/.node-gyp/**",
-					"**/tmp/cache/**",
-				},
+				exclude = grep_exclude,
+				win = { input = { keys = picker_toggles } },
 			},
-			grep_buffers = {},
 			explorer = {
 				hidden = true,
 				ignored = true,
-				supports_live = true,
 				auto_close = true,
-				diagnostics = true,
-				diagnostics_open = false,
 				focus = "list",
-				follow_file = true,
-				git_status = true,
-				git_status_open = false,
-				git_untracked = true,
 				jump = { close = true },
-				tree = true,
-				watch = true,
-				exclude = {
-					".git",
-					".pnpm-store",
-					".venv",
-					".DS_Store",
-					"**/.node-gyp/**",
-				},
+				exclude = { ".git", ".pnpm-store", ".venv", ".DS_Store", "**/.node-gyp/**" },
 			},
 		},
 	},
 })
 
--- stylua: ignore start
-local   keymaps = {
-    -- Top Pickers & Explorer
-    {
-      "<leader>,", function()
-        Snacks.picker.buffers({
-          win = {
-            input = {
-              keys = {
-                ["dd"] = "bufdelete",
-                ["<c-d>"] = { "bufdelete", mode = { "n", "i" } },
-              },
-            },
-            list = { keys = { ["dd"] = "bufdelete" } },
-          },
-        })
-      end, desc = "Buffers",
-    },
-    -- find
-    { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-    { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
-    { "<leader>sf", function() Snacks.picker.files() end, desc = "Find Files" },
-    { "<leader>sg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
-    { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
-    { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
-    -- git
-    { "<leader>gb", function() Snacks.picker.git_branches() end, desc = "Git Branches" },
-    { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
-    { "<leader>gL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line" },
-    { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Git Status" },
-    { "<leader>gS", function() Snacks.picker.git_stash() end, desc = "Git Stash" },
-    { "<leader>gp", function() Snacks.picker.git_diff() end, desc = "Git Diff Picker (Hunks)" },
-    { "<leader>gP", function() Snacks.picker.git_diff({ base = "origin" }) end, desc = "Git Diff Picker(origin)" },
-    { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git Log File" },
-    -- Grep
-    { "<leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
-    -- search
-    { "<leader>sk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
-    -- Other
-    { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
-    { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-    { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-}
--- stylua: ignore end
-for _, map in ipairs(keymaps) do
-	local opts = { desc = map.desc }
-	if map.silent ~= nil then
-		opts.silent = map.silent
-	end
-	if map.noremap ~= nil then
-		opts.noremap = map.noremap
-	else
-		opts.noremap = true
-	end
-	if map.expr ~= nil then
-		opts.expr = map.expr
-	end
-
-	local mode = map.mode or "n"
-	vim.keymap.set(mode, map[1], map[2], opts)
+local map = function(lhs, fn, desc, mode)
+	vim.keymap.set(mode or "n", lhs, fn, { desc = desc })
 end
+
+map("<leader>,", function()
+	Snacks.picker.buffers({
+		win = {
+			input = {
+				keys = {
+					["dd"] = "bufdelete",
+					["<c-d>"] = { "bufdelete", mode = { "n", "i" } },
+				},
+			},
+			list = { keys = { ["dd"] = "bufdelete" } },
+		},
+	})
+end, "Buffers")
+
+-- find
+map("<leader>fb", Snacks.picker.buffers, "Buffers")
+map("<leader>fc", function()
+	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+end, "Find Config File")
+map("<leader>sf", Snacks.picker.files, "Find Files")
+map("<leader>fg", Snacks.picker.git_files, "Find Git Files")
+map("<leader>fp", Snacks.picker.projects, "Projects")
+map("<leader>fr", Snacks.picker.recent, "Recent")
+
+-- git
+map("<leader>gb", Snacks.picker.git_branches, "Git Branches")
+map("<leader>gl", Snacks.picker.git_log, "Git Log")
+map("<leader>gL", Snacks.picker.git_log_line, "Git Log Line")
+map("<leader>gs", Snacks.picker.git_status, "Git Status")
+map("<leader>gS", Snacks.picker.git_stash, "Git Stash")
+map("<leader>gp", Snacks.picker.git_diff, "Git Diff (Hunks)")
+map("<leader>gP", function()
+	Snacks.picker.git_diff({ base = "origin" })
+end, "Git Diff (origin)")
+map("<leader>gf", Snacks.picker.git_log_file, "Git Log File")
+
+-- search
+map("<leader>sg", Snacks.picker.grep, "Grep")
+map("<leader>sk", Snacks.picker.keymaps, "Keymaps")
+
+-- other
+map("<leader>z", function()
+	Snacks.zen()
+end, "Toggle Zen Mode")
+map("<leader>gB", function()
+	Snacks.gitbrowse()
+end, "Git Browse", { "n", "v" })
+map("<leader>gg", function()
+	Snacks.lazygit()
+end, "Lazygit")
