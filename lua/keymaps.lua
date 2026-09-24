@@ -38,12 +38,8 @@ vim.keymap.set("n", "<M-Left>", "<cmd>vertical resize -2<cr>")
 vim.keymap.set("n", "<M-Up>", "<cmd>resize +2<cr>")
 vim.keymap.set("n", "<M-Down>", "<cmd>resize -2<cr>")
 
--- LSP
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
+-- LSP (grn/gra/grr/gri/grt/gO are Neovim 0.11 defaults; picker versions are buffer-local in plugin/nvim-lspconfig.lua)
 vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
-vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
 
 vim.keymap.set("n", "<leader>w", ":w<CR>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", ":q<CR>", { desc = "Quit" })

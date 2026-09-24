@@ -12,7 +12,8 @@ Personal Neovim configuration (Kickstart-derived, single-user). Not an app: ther
 
 - Uses **vim.pack** (Neovim's built-in package manager, requires Neovim 0.12+). There is no lazy.nvim/packer. Each `plugin/*.lua` file starts with `vim.pack.add({ ... })` and then configures the plugin.
 - Lockfile is `nvim-pack-lock.json` (managed by vim.pack; do not hand-edit).
-- Post-install build steps live in `lua/autocmds.lua` via the `PackChanged` event, e.g. `telescope-fzf-native.nvim` is compiled with `make` on install/update. If a new plugin needs a build step, add a case to that autocmd, not a plugin-manager hook.
+- Pickers (files, grep, LSP navigation, buffers, etc.) use **snacks.nvim** (`Snacks.picker`), configured in `plugin/snacks.lua`. Telescope is gone; don't reintroduce it.
+- If a plugin ever needs a post-install build step, add a `PackChanged` autocmd in `lua/autocmds.lua`, not a plugin-manager hook.
 
 ## LSP / tooling (plugin/nvim-lspconfig.lua)
 
@@ -39,7 +40,7 @@ Personal Neovim configuration (Kickstart-derived, single-user). Not an app: ther
 
 - Files use tabs for indentation and double quotes (stylua-managed; see "Formatting and linting").
 - Three colorschemes are installed (rose-pine, tokyonight, gruvbox-material). The active scheme is persisted: `plugin/colourschemes.lua` reads the saved name from `stdpath("data") .. "/colorscheme.txt"` at startup (default `tokyonight-moon`) and a `ColorScheme` autocmd writes `vim.g.colors_name` back on every switch. `CursorLineNr` is overridden with a rose-pine palette color (`#e0def4`) regardless of the active theme; the `LineNrAbove`/`LineNrBelow` overrides are commented out.
-- `hardtime.nvim` and the arrow-key/`jk`-only training keymaps in `lua/keymaps.lua` deliberately block arrow keys and `<Esc>` in insert mode. Don't "fix" them.
+- The arrow-key/`jk`-only training keymaps in `lua/keymaps.lua` deliberately block arrow keys and `<Esc>` in insert mode. Don't "fix" them.
 - Harpoon uses the `harpoon2` branch, pinned via `{ src = ..., version = 'harpoon2' }` in `vim.pack.add`.
 
 ## Verifying changes
