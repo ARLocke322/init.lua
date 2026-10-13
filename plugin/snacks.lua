@@ -37,9 +37,32 @@ local grep_exclude = vim.list_extend(vim.deepcopy(exclude), {
 	"certificates/*",
 })
 
+-- Snacks centers each header line on its own, so pad every line to the same
+-- width (trailing spaces don't survive editors/formatters).
+local header = (function()
+	local lines = vim.split([[
+███▄▄▄▄      ▄████████  ▄██████▄   ▄█    █▄   ▄█    ▄▄▄▄███▄▄▄▄
+███▀▀▀██▄   ███    ███ ███    ███ ███    ███ ███  ▄██▀▀▀███▀▀▀██▄
+███   ███   ███    █▀  ███    ███ ███    ███ ███▌ ███   ███   ███
+███   ███  ▄███▄▄▄     ███    ███ ███    ███ ███▌ ███   ███   ███
+███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ ███▌ ███   ███   ███
+███   ███   ███    █▄  ███    ███ ███    ███ ███  ███   ███   ███
+███   ███   ███    ███ ███    ███ ███    ███ ███  ███   ███   ███
+ ▀█   █▀    ██████████  ▀██████▀   ▀██████▀  █▀    ▀█   ███   █▀]], "\n")
+	local width = 0
+	for _, line in ipairs(lines) do
+		width = math.max(width, vim.fn.strdisplaywidth(line))
+	end
+	for i, line in ipairs(lines) do
+		lines[i] = line .. string.rep(" ", width - vim.fn.strdisplaywidth(line))
+	end
+	return table.concat(lines, "\n")
+end)()
+
 Snacks.setup({
 	dashboard = {
 		enabled = true,
+		preset = { header = header },
 		sections = {
 			{ section = "header" },
 			{ section = "keys", gap = 1, padding = 1 },
